@@ -21,10 +21,10 @@ namespace DdpClient.Models
 
         public T Get<T>()
         {
-            if (Result is JObject)
-                return ((JObject) Result).ToObject<T>();
-            if (Result is JValue)
-                return ((JValue) Result).ToObject<T>();
+            if (Result is JObject jObject)
+                return jObject.ToObject<T>();
+            if (Result is JValue value)
+                return value.ToObject<T>();
             return default(T);
         }
     }

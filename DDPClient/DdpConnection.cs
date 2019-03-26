@@ -1,9 +1,12 @@
-﻿using System;
+﻿using System.Runtime.CompilerServices;
+using System;
 using System.Collections.Generic;
 using DdpClient.Models;
 using DdpClient.Models.Client;
 using DdpClient.Models.Server;
 using Newtonsoft.Json.Linq;
+
+[assembly: InternalsVisibleTo("DDPClient.Tests")]
 
 namespace DdpClient
 {
@@ -39,7 +42,7 @@ namespace DdpClient
         /// <summary>
         ///     This is rasied when the connection throws errors
         /// </summary>
-        public EventHandler<Exception> Error; 
+        public EventHandler<Exception> Error;
 
         /// <summary>
         ///     This is raised when the server sends a Ping-Msg
@@ -53,7 +56,6 @@ namespace DdpClient
 
         public DdpConnection() : this(new WebSocketSharpAdapter())
         {
-            
         }
 
         public DdpConnection(WebSocketAdapterBase webSocketAdapter)
@@ -64,7 +66,7 @@ namespace DdpClient
 
         public string Session { get; set; }
 
-        public Func<string> IdGenerator { get; set; } 
+        public Func<string> IdGenerator { get; set; }
 
         private void Initialize()
         {
@@ -292,6 +294,7 @@ namespace DdpClient
                     _webSocketAdapter.Close();
                 }
             }
+
             //dispose unmanaged resources
             _disposed = true;
         }
