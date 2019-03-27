@@ -11,13 +11,13 @@ namespace DDPClient.Tests
         [Test]
         public void ShouldDeserializeDdpBinary()
         {
-            string ddpBinary = "{\"$binary\":\"ICAgICAgIA==\"}";
-            DdpBinary expected = new DdpBinary
+            var ddpBinary = "{\"$binary\":\"ICAgICAgIA==\"}";
+            var expected = new DdpBinary
             {
                 Data = new byte[] {0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20}
             };
 
-            DdpBinary result = JsonConvert.DeserializeObject<DdpBinary>(ddpBinary);
+            var result = JsonConvert.DeserializeObject<DdpBinary>(ddpBinary);
 
             Assert.AreEqual(expected.Data, result.Data);
         }
@@ -25,13 +25,13 @@ namespace DDPClient.Tests
         [Test]
         public void ShouldDeserializeDdpDate()
         {
-            string ddpDate = "{\"$date\":1447770390000}";
-            DdpDate expected = new DdpDate
+            var ddpDate = "{\"$date\":1447770390000}";
+            var expected = new DdpDate
             {
                 DateTime = new DateTime(2015, 11, 17, 14, 26, 30)
             };
 
-            DdpDate result = JsonConvert.DeserializeObject<DdpDate>(ddpDate);
+            var result = JsonConvert.DeserializeObject<DdpDate>(ddpDate);
 
             Assert.AreEqual(expected.DateTime, result.DateTime);
         }
@@ -39,13 +39,13 @@ namespace DDPClient.Tests
         [Test]
         public void ShouldSerializeDdpBinary()
         {
-            DdpBinary binary = new DdpBinary
+            var binary = new DdpBinary
             {
                 Data = new byte[] {0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20}
             };
-            string expected = "{\"$binary\":\"ICAgICAgIA==\"}";
+            var expected = "{\"$binary\":\"ICAgICAgIA==\"}";
 
-            string result = JsonConvert.SerializeObject(binary);
+            var result = JsonConvert.SerializeObject(binary);
 
             Assert.AreEqual(expected, result);
         }
@@ -53,13 +53,13 @@ namespace DDPClient.Tests
         [Test]
         public void ShouldSerializeDdpDate()
         {
-            DdpDate date = new DdpDate
+            var date = new DdpDate
             {
                 DateTime = new DateTime(2015, 11, 17, 14, 26, 30)
             };
-            string expected = "{\"$date\":1447770390000}";
+            var expected = "{\"$date\":1447770390000}";
 
-            string result = JsonConvert.SerializeObject(date);
+            var result = JsonConvert.SerializeObject(date);
 
             Assert.AreEqual(expected, result);
         }

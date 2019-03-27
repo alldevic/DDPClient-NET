@@ -16,7 +16,7 @@ namespace DdpClient
             {
                 [typeof (DdpDate)] = (reader, existingValue, serializer) =>
                 {
-                    JObject ob = JObject.Load(reader);
+                    var ob = JObject.Load(reader);
                     return ob["$date"] == null
                         ? existingValue
                         : new DdpDate
@@ -26,7 +26,7 @@ namespace DdpClient
                 },
                 [typeof (DdpBinary)] = (reader, existingValue, serializer) =>
                 {
-                    JObject ob = JObject.Load(reader);
+                    var ob = JObject.Load(reader);
                     return ob["$binary"] == null
                         ? existingValue
                         : new DdpBinary
@@ -39,22 +39,20 @@ namespace DdpClient
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            if (value is DdpBinary)
+            switch (value)
             {
-                DdpBinary ddpBinary = (DdpBinary)value;
-                writer.WriteStartObject();
-                writer.WritePropertyName("$binary");
-                writer.WriteValue(DdpUtil.GetBase64FromBytes(ddpBinary.Data));
-                writer.WriteEndObject();
-                return;
-            }
-            if (value is DdpDate)
-            {
-                DdpDate ddpDate = (DdpDate) value;
-                writer.WriteStartObject();
-                writer.WritePropertyName("$date");
-                writer.WriteValue(DdpUtil.DateTimeToMilliseconds(ddpDate.DateTime));
-                writer.WriteEndObject();
+                case DdpBinary ddpBinary:
+                    writer.WriteStartObject();
+                    writer.WritePropertyName("$binary");
+                    writer.WriteValue(DdpUtil.GetBase64FromBytes(ddpBinary.Data));
+                    writer.WriteEndObject();
+                    return;
+                case DdpDate ddpDate:
+                    writer.WriteStartObject();
+                    writer.WritePropertyName("$date");
+                    writer.WriteValue(DdpUtil.DateTimeToMilliseconds(ddpDate.DateTime));
+                    writer.WriteEndObject();
+                    break;
             }
         }
 

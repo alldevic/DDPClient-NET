@@ -20,12 +20,12 @@ namespace DdpClient
         private bool _disposed;
 
         /// <summary>
-        ///     This is raised when the connection is succesful with Meteor (after <see cref="Open" />)
+        ///     This is raised when the connection is successful with Meteor (after <see cref="Open" />)
         /// </summary>
         public EventHandler<ConnectResponse> Connected;
 
         /// <summary>
-        ///     This is raised when the server responeded to a login
+        ///     This is raised when the server responded to a login
         /// </summary>
         public EventHandler<LoginResponse> Login;
 
@@ -40,7 +40,7 @@ namespace DdpClient
         public EventHandler<EventArgs> Closed;
 
         /// <summary>
-        ///     This is rasied when the connection throws errors
+        ///     This is raised when the connection throws errors
         /// </summary>
         public EventHandler<Exception> Error;
 
@@ -110,7 +110,7 @@ namespace DdpClient
 
         public string LoginWithUsername(string username, string password)
         {
-            BasicLoginModel<UsernameUser> model = new BasicLoginModel<UsernameUser>
+            var model = new BasicLoginModel<UsernameUser>
             {
                 Password = new PasswordModel
                 {
@@ -127,7 +127,7 @@ namespace DdpClient
 
         public string LoginWithEmail(string email, string password)
         {
-            BasicLoginModel<EmailUser> model = new BasicLoginModel<EmailUser>
+            var model = new BasicLoginModel<EmailUser>
             {
                 User = new EmailUser
                 {
@@ -144,7 +144,7 @@ namespace DdpClient
 
         public string LoginWithToken(string token)
         {
-            BasicTokenModel model = new BasicTokenModel
+            var model = new BasicTokenModel
             {
                 Resume = token
             };
@@ -153,7 +153,7 @@ namespace DdpClient
 
         public void Call(string name, params object[] methodParams)
         {
-            MethodModel model = new MethodModel
+            var model = new MethodModel
             {
                 Id = IdGenerator(),
                 Method = name,
@@ -164,7 +164,7 @@ namespace DdpClient
 
         public string Call(string name, Action<MethodResponse> callback, params object[] methodParams)
         {
-            MethodModel model = new MethodModel
+            var model = new MethodModel
             {
                 Id = IdGenerator(),
                 Method = name,
@@ -177,8 +177,8 @@ namespace DdpClient
 
         public DdpMethodHandler<T> Call<T>(string name, Action<DetailedError, T> callback, params object[] methodParams)
         {
-            DdpMethodHandler<T> methodHandler = new DdpMethodHandler<T>(_webSocketAdapter, callback, IdGenerator());
-            MethodModel model = new MethodModel
+            var methodHandler = new DdpMethodHandler<T>(_webSocketAdapter, callback, IdGenerator());
+            var model = new MethodModel
             {
                 Id = methodHandler.Id,
                 Method = name,
@@ -200,7 +200,7 @@ namespace DdpClient
 
         private void HandleLogin(MethodResponse response)
         {
-            LoginResponse loginResponse = response.Get<LoginResponse>() ?? new LoginResponse
+            var loginResponse = response.Get<LoginResponse>() ?? new LoginResponse
             {
                 Error = response.Error
             };
@@ -238,7 +238,7 @@ namespace DdpClient
         {
             if (!_methods.ContainsKey(response.Id))
                 return;
-            Action<MethodResponse> cb = _methods[response.Id];
+            var cb = _methods[response.Id];
             _methods.Remove(response.Id);
             cb(response);
         }

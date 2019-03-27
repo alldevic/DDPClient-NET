@@ -31,7 +31,7 @@ namespace DdpClient
 
         public void Sub()
         {
-            SubModel subModel = new SubModel
+            var subModel = new SubModel
             {
                 Id = Id,
                 Name = Name,
@@ -44,7 +44,7 @@ namespace DdpClient
 
         public void Unsub()
         {
-            UnsubModel unsubModel = new UnsubModel
+            var unsubModel = new UnsubModel
             {
                 Id = Id
             };
@@ -71,7 +71,7 @@ namespace DdpClient
                     HandleNoSub(e.Get<NoSubModel>());
                     break;
                 case "ready":
-                    SubReadyModel ready = e.Get<SubReadyModel>();
+                    var ready = e.Get<SubReadyModel>();
                     if (ready.Subs.Contains(Id))
                         HandleReady();
                     break;

@@ -25,16 +25,16 @@ namespace DdpClient
 
         protected virtual void OnMessageReceived(string data)
         {
-            JObject body = JObject.Parse(data);
+            var body = JObject.Parse(data);
             if (body["msg"] == null)
                 return;
-            string msg = body["msg"].ToObject<string>();
+            var msg = body["msg"].ToObject<string>();
             DdpMessage?.Invoke(this, new DdpMessage(msg, data));
         }
 
         public virtual void SendJson(object body)
         {
-            string data = JsonConvert.SerializeObject(body);
+            var data = JsonConvert.SerializeObject(body);
             Send(data);
         }
     }

@@ -24,28 +24,28 @@ namespace DdpClient
         public static DateTime MillisecondsToDateTime(long unixTimeStamp)
         {
             // Unix timestamp is seconds past epoch
-            DateTime epoch = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+            var epoch = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
             return epoch.AddMilliseconds(unixTimeStamp);
         }
 
         public static long DateTimeToMilliseconds(DateTime date)
         {
             // Unix timestamp is seconds past epoch
-            DateTime epoch = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+            var epoch = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
             return Convert.ToInt64((date - epoch).TotalMilliseconds);
         }
 
         // ReSharper disable once InconsistentNaming
         public static string GetSHA256(string text)
         {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
 
-            using (SHA256 hash = SHA256.Create())
+            using (var hash = SHA256.Create())
             {
-                Encoding enc = Encoding.UTF8;
-                Byte[] result = hash.ComputeHash(enc.GetBytes(text));
+                var enc = Encoding.UTF8;
+                var result = hash.ComputeHash(enc.GetBytes(text));
 
-                foreach (Byte b in result)
+                foreach (var b in result)
                     sb.Append(b.ToString("x2"));
             }
 

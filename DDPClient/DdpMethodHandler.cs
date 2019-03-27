@@ -1,6 +1,5 @@
 ﻿using System;
 using DdpClient.Models;
-using Newtonsoft.Json.Linq;
 
 namespace DdpClient
 {
@@ -21,15 +20,17 @@ namespace DdpClient
 
         private void OnDdpMessage(object sender, DdpMessage ddpMessage)
         {
-            if (ddpMessage.Msg == "result" && ddpMessage.Body["id"].ToObject<string>() == Id)
+            if (ddpMessage.Msg != "result" || ddpMessage.Body["id"].ToObject<string>() != Id)
             {
-                _webSocketAdapterBase.DdpMessage -= OnDdpMessage;
-                JObject body = ddpMessage.Body;
-                if (body["error"] == null)
-                    _callback(null, body["result"].ToObject<T>());
-                else
-                    _callback(body["error"].ToObject<DetailedError>(), default(T));
+                return;
             }
+            
+            _webSocketAdapterBase.DdpMessage -= OnDdpMessage;
+            var body = ddpMessage.Body;
+            if (body["error"] == null)
+                _callback(null, body["result"].ToObject<T>());
+            else
+                _callback(body["error"].ToObject<DetailedError>(), default(T));
         }
     }
 }

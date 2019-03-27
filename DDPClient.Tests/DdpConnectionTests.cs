@@ -35,7 +35,7 @@ namespace DDPClient.Tests
         {
             _mock.Setup(websocket => websocket.Connect(It.IsAny<string>())).Callback(() => _mock.Raise(webSocket => webSocket.Opened += null, null, EventArgs.Empty));
 
-            bool wasRaised = false;
+            var wasRaised = false;
             EventHandler<EventArgs> handler = null;
             handler = (sender, args) =>
             {
@@ -54,12 +54,12 @@ namespace DDPClient.Tests
         [Test]
         public void ShouldHandleDdpConnectFailed()
         {
-            string version = "2";
+            var version = "2";
 
             _mock.Setup(websocket => websocket.SendJson(It.IsAny<ConnectModel>()))
                 .Callback(() => _mock.Raise(webSocket => webSocket.DdpMessage += null, null, new DdpMessage("failed", "{\"msg\":\"failed\", \"version\":\"" + version + "\"}")));
 
-            bool wasRaised = false;
+            var wasRaised = false;
             EventHandler<ConnectResponse> handler = null;
             handler = (sender, response) =>
             {
@@ -78,12 +78,12 @@ namespace DDPClient.Tests
         [Test]
         public void ShouldHandleDdpConnectSuccess()
         {
-            string session = "SomeSession";
+            var session = "SomeSession";
 
             _mock.Setup(websocket => websocket.SendJson(It.IsAny<ConnectModel>()))
                 .Callback(() => _mock.Raise(webSocket => webSocket.DdpMessage += null, null, new DdpMessage("connected", "{\"msg\":\"connected\", \"session\":\"" + session + "\"}")));
 
-            bool wasRaised = false;
+            var wasRaised = false;
             EventHandler<ConnectResponse> handler = null;
             handler = (sender, response) =>
             {
@@ -102,9 +102,9 @@ namespace DDPClient.Tests
         [Test]
         public void ShouldHandleMethod()
         {
-            string id = "ShouldHandleMethod";
-            string methodName = "MethodName";
-            int parameter = 5;
+            var id = "ShouldHandleMethod";
+            var methodName = "MethodName";
+            var parameter = 5;
             _connection.IdGenerator = () => id;
 
             _connection.Call(methodName, parameter);
@@ -115,12 +115,12 @@ namespace DDPClient.Tests
         [Test]
         public void ShouldHandleMethodDynamic()
         {
-            string id = "ShouldHandleMethodDynamic";
-            string methodName = "MethodName";
-            int parameter = 5;
+            var id = "ShouldHandleMethodDynamic";
+            var methodName = "MethodName";
+            var parameter = 5;
             _connection.IdGenerator = () => id;
 
-            MethodResponse response = new MethodResponse
+            var response = new MethodResponse
             {
                 Id = id,
                 Error = null,
@@ -130,7 +130,7 @@ namespace DDPClient.Tests
             _mock.Setup(webSocket => webSocket.SendJson(It.Is<MethodModel>(model => model.Id == id)))
                 .Callback(() => _mock.Raise(webSocket => webSocket.DdpMessage += null, null, new DdpMessage("result", JsonConvert.SerializeObject(response))));
 
-            bool wasCalled = false;
+            var wasCalled = false;
             Action<MethodResponse> callback = mResponse =>
             {
                 wasCalled = true;
@@ -154,12 +154,12 @@ namespace DDPClient.Tests
 
             _connection.IdGenerator = () => id;
 
-            string mockResult = "{\"msg\":\"result\",\"id\":\"" + id + "\",\"result\":{\"data\": 10}}";
+            var mockResult = "{\"msg\":\"result\",\"id\":\"" + id + "\",\"result\":{\"data\": 10}}";
 
             _mock.Setup(webSocket => webSocket.SendJson(It.Is<MethodModel>(model => model.Id == id)))
                 .Callback(() => _mock.Raise(webSocket => webSocket.DdpMessage += null, null, new DdpMessage("result", mockResult)));
 
-            bool wasCalled = false;
+            var wasCalled = false;
             Action<DetailedError, TestClass> callback = (error, mResponse) =>
             {
                 wasCalled = true;
@@ -183,12 +183,12 @@ namespace DDPClient.Tests
 
             _connection.IdGenerator = () => id;
 
-            string mockResult = "{\"msg\":\"result\",\"id\":\"" + id + "\",\"result\": 10}";
+            var mockResult = "{\"msg\":\"result\",\"id\":\"" + id + "\",\"result\": 10}";
 
             _mock.Setup(webSocket => webSocket.SendJson(It.Is<MethodModel>(model => model.Id == id)))
                 .Callback(() => _mock.Raise(webSocket => webSocket.DdpMessage += null, null, new DdpMessage("result", mockResult)));
 
-            bool wasCalled = false;
+            var wasCalled = false;
             Action<DetailedError, int> callback = (error, mResponse) =>
             {
                 wasCalled = true;
@@ -205,13 +205,13 @@ namespace DDPClient.Tests
         [Test]
         public void ShouldHandlePingFromServerWithId()
         {
-            string id = "SomeID";
-            PingModel ping = new PingModel
+            var id = "SomeID";
+            var ping = new PingModel
             {
                 Id = id
             };
 
-            bool wasRaised = false;
+            var wasRaised = false;
             EventHandler<PingModel> handler = null;
             handler = delegate(object sender, PingModel pingMsg)
             {
@@ -230,9 +230,9 @@ namespace DDPClient.Tests
         [Test]
         public void ShouldHandlePingFromServerWithoutId()
         {
-            PingModel ping = new PingModel();
+            var ping = new PingModel();
 
-            bool wasRaised = false;
+            var wasRaised = false;
             EventHandler<PingModel> handler = null;
             handler = delegate(object sender, PingModel pingMsg)
             {
@@ -252,9 +252,9 @@ namespace DDPClient.Tests
         [Test]
         public void ShouldHandlePongFromServerWithId()
         {
-            string id = "ShouldHandlePongFromServerWithId";
+            var id = "ShouldHandlePongFromServerWithId";
 
-            bool wasRaised = false;
+            var wasRaised = false;
             EventHandler<PongModel> handler = null;
             handler = delegate(object sender, PongModel pong)
             {
@@ -272,7 +272,7 @@ namespace DDPClient.Tests
         [Test]
         public void ShouldHandlePongFromServerWithoutId()
         {
-            bool wasRaised = false;
+            var wasRaised = false;
             EventHandler<PongModel> handler = null;
             handler = delegate(object sender, PongModel pong)
             {
@@ -293,7 +293,7 @@ namespace DDPClient.Tests
             const string methodId = "SomeRandomId";
             _connection.IdGenerator = () => methodId;
 
-            MethodResponse response = new MethodResponse
+            var response = new MethodResponse
             {
                 Id = methodId,
                 Error = null,
@@ -302,10 +302,10 @@ namespace DDPClient.Tests
             _mock.Setup(websocket => websocket.SendJson(It.IsAny<MethodModel>()))
                 .Callback(() => _mock.Raise(socket => socket.DdpMessage += null, null, new DdpMessage("result", JsonConvert.SerializeObject(response))));
 
-            string email = "some@email.de";
-            string password = "SecretPassword";
+            var email = "some@email.de";
+            var password = "SecretPassword";
 
-            bool wasRaised = false;
+            var wasRaised = false;
             EventHandler<LoginResponse> handler = null;
             handler = delegate(object sender, LoginResponse loginResponse)
             {
@@ -330,10 +330,10 @@ namespace DDPClient.Tests
         [Test]
         public void ShouldLoginWithTokenSuccess()
         {
-            String methodId = "SomeRandomId";
+            var methodId = "SomeRandomId";
             _connection.IdGenerator = () => methodId;
 
-            MethodResponse response = new MethodResponse
+            var response = new MethodResponse
             {
                 Id = methodId,
                 Error = null,
@@ -342,9 +342,9 @@ namespace DDPClient.Tests
             _mock.Setup(websocket => websocket.SendJson(It.IsAny<MethodModel>()))
                 .Callback(() => _mock.Raise(socket => socket.DdpMessage += null, null, new DdpMessage("result", JsonConvert.SerializeObject(response))));
 
-            string token = "SomeRandomToken";
+            var token = "SomeRandomToken";
 
-            bool wasRaised = false;
+            var wasRaised = false;
             EventHandler<LoginResponse> handler = null;
             handler = delegate(object sender, LoginResponse loginResponse)
             {
@@ -369,10 +369,10 @@ namespace DDPClient.Tests
         [Test]
         public void ShouldLoginWithUsernameSuccess()
         {
-            String methodId = "SomeRandomId";
+            var methodId = "SomeRandomId";
             _connection.IdGenerator = () => methodId;
 
-            MethodResponse response = new MethodResponse
+            var response = new MethodResponse
             {
                 Id = methodId,
                 Error = null,
@@ -381,10 +381,10 @@ namespace DDPClient.Tests
             _mock.Setup(websocket => websocket.SendJson(It.IsAny<MethodModel>()))
                 .Callback(() => _mock.Raise(socket => socket.DdpMessage += null, null, new DdpMessage("result", JsonConvert.SerializeObject(response))));
 
-            string username = "TestUser";
-            string password = "SecretPassword";
+            var username = "TestUser";
+            var password = "SecretPassword";
 
-            bool wasRaised = false;
+            var wasRaised = false;
             EventHandler<LoginResponse> handler = null;
             handler = delegate(object sender, LoginResponse loginResponse)
             {
@@ -410,7 +410,7 @@ namespace DDPClient.Tests
         [Test]
         public void ShouldPingWithId()
         {
-            string id = "SomeId";
+            var id = "SomeId";
             _connection.PingServer(id);
 
             _mock.Verify(websocket => websocket.SendJson(It.Is<PingModel>(ping => ping.Id == id)));
@@ -427,20 +427,20 @@ namespace DDPClient.Tests
         [Test]
         public void ShouldSubscriberHandleAdded()
         {
-            string id = "SomeRandomId";
-            int data = 5;
-            string collection = "tasks";
+            var id = "SomeRandomId";
+            var data = 5;
+            var collection = "tasks";
 
-            TestClass res = new TestClass
+            var res = new TestClass
             {
                 Id = id,
                 Data = data
             };
-            string mockResult = "{\"msg\":\"added\",\"id\":\"" + id + "\",\"collection\":\"" + collection + "\",\"fields\": " + JsonConvert.SerializeObject(res) + "}";
+            var mockResult = "{\"msg\":\"added\",\"id\":\"" + id + "\",\"collection\":\"" + collection + "\",\"fields\": " + JsonConvert.SerializeObject(res) + "}";
 
-            DdpSubscriber<TestClass> ddpSubscriber = _connection.GetSubscriber<TestClass>(collection);
+            var ddpSubscriber = _connection.GetSubscriber<TestClass>(collection);
 
-            bool wasRaised = false;
+            var wasRaised = false;
             EventHandler<SubAddedModel<TestClass>> handler = null;
             handler = delegate (object sender, SubAddedModel<TestClass> added)
             {
@@ -461,20 +461,20 @@ namespace DDPClient.Tests
         [Test]
         public void ShouldSubscriberHandleChanged()
         {
-            string id = "SomeRandomId";
-            int data = 5;
-            string collection = "tasks";
+            var id = "SomeRandomId";
+            var data = 5;
+            var collection = "tasks";
 
-            TestClass res = new TestClass
+            var res = new TestClass
             {
                 Id = id,
                 Data = data
             };
-            string mockResult = "{\"msg\":\"changed\",\"id\":\"" + id + "\",\"collection\":\"" + collection + "\",\"fields\": " + JsonConvert.SerializeObject(res) + "}";
+            var mockResult = "{\"msg\":\"changed\",\"id\":\"" + id + "\",\"collection\":\"" + collection + "\",\"fields\": " + JsonConvert.SerializeObject(res) + "}";
 
-            DdpSubscriber<TestClass> ddpSubscriber = _connection.GetSubscriber<TestClass>(collection);
+            var ddpSubscriber = _connection.GetSubscriber<TestClass>(collection);
 
-            bool wasRaised = false;
+            var wasRaised = false;
             EventHandler<SubChangedModel<TestClass>> handler = null;
             handler = delegate (object sender, SubChangedModel<TestClass> changed)
             {
@@ -495,14 +495,14 @@ namespace DDPClient.Tests
         [Test]
         public void ShouldSubscriberHandleRemoved()
         {
-            string id = "SomeRandomId";
-            string collection = "tasks";
+            var id = "SomeRandomId";
+            var collection = "tasks";
 
-            string mockResult = "{\"msg\":\"removed\",\"id\":\"" + id + "\",\"collection\":\"" + collection + "\"}";
+            var mockResult = "{\"msg\":\"removed\",\"id\":\"" + id + "\",\"collection\":\"" + collection + "\"}";
 
-            DdpSubscriber<TestClass> ddpSubscriber = _connection.GetSubscriber<TestClass>(collection);
+            var ddpSubscriber = _connection.GetSubscriber<TestClass>(collection);
 
-            bool wasRaised = false;
+            var wasRaised = false;
             EventHandler<SubRemovedModel> handler = null;
             handler = delegate (object sender, SubRemovedModel changed)
             {
