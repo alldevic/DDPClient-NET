@@ -15,12 +15,16 @@ namespace DdpClient
         public EventHandler<SubMovedBeforeModel> MovedBefore;
         public EventHandler<SubRemovedModel> Removed;
 
-        internal DdpSubscriber(WebSocketAdapterBase webSocketAdapter, string name)
+        //TODO: Test it
+        public string CollectionName { get; set; }
+        
+        internal DdpSubscriber(WebSocketAdapterBase webSocketAdapter, string name, string collectionName = null)
         {
             _webSocketAdapterBase = webSocketAdapter;
             _webSocketAdapterBase.DdpMessage += OnDdpMessage;
 
             Name = name;
+            CollectionName = string.IsNullOrEmpty(collectionName) ? name : collectionName;
             Subscribers = new List<IDdpSubscriber<T>>();
         }
 
@@ -61,10 +65,9 @@ namespace DdpClient
 
         private void OnDdpMessage(object sender, DdpMessage e)
         {
-            Debug.WriteLine(e.Msg);
             if (e.Body["collection"] == null)
                 return;
-            if (e.Body["collection"].ToObject<string>() != Name)
+            if (e.Body["collection"].ToObject<string>() != CollectionName)
                 return;
 
             switch (e.Msg)

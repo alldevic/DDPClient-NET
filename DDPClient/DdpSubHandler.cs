@@ -9,7 +9,7 @@ namespace DdpClient
         private readonly WebSocketAdapterBase _webSocketAdapterBase;
 
         public EventHandler<NoSubModel> NoSub;
-        public EventHandler<EventArgs> Ready;
+        public EventHandler<SubReadyModel> Ready;
 
         public DdpSubHandler(WebSocketAdapterBase webSocketAdapterBase, string subName, params object[] subParams)
         {
@@ -60,7 +60,7 @@ namespace DdpClient
 
         private void HandleReady()
         {
-            Ready?.Invoke(this, EventArgs.Empty);
+            Ready?.Invoke(this, new SubReadyModel());
         }
 
         private void Message(object sender, DdpMessage e)

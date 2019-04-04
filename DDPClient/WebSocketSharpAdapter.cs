@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using WebSocketSharp;
 
 namespace DdpClient
@@ -29,10 +30,10 @@ namespace DdpClient
             _webSocket.Connect();
         }
 
-        public override void ConnectAsync(string url)
+        public override Task ConnectAsync(string url)
         {
             Initialize(url);
-            _webSocket.ConnectAsync();
+            return Task.Run(() => _webSocket.ConnectAsync());
         }
 
         protected override void Send(string message) => _webSocket.Send(message);

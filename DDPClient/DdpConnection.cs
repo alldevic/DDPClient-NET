@@ -1,6 +1,8 @@
 ﻿using System.Runtime.CompilerServices;
 using System;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using DdpClient.Models;
 using DdpClient.Models.Client;
 using DdpClient.Models.Server;
@@ -79,6 +81,8 @@ namespace DdpClient
             IdGenerator = DdpUtil.GetRandomId;
         }
 
+        ~DdpConnection() => Dispose(false);
+
         public void Dispose()
         {
             Dispose(true);
@@ -90,11 +94,16 @@ namespace DdpClient
             _webSocketAdapter.Connect($"{(ssl ? "wss" : "ws")}://{url}/websocket");
         }
 
-        public void ConnectAsync(string url, bool ssl = false)
+        public async Task ConnectAsync(string url, bool ssl = false)
         {
-            _webSocketAdapter.ConnectAsync($"{(ssl ? "wss" : "ws")}://{url}/websocket");
+            await _webSocketAdapter.ConnectAsync($"{(ssl ? "wss" : "ws")}://{url}/websocket");
         }
 
+        public void PongServer(string id = null)
+        {
+            _webSocketAdapter.SendJson(new PongModel {Id = id});
+        }
+        
         public void Close()
         {
             _webSocketAdapter.Close();
@@ -151,7 +160,33 @@ namespace DdpClient
             return Call("login", HandleLogin, model);
         }
 
-        public void Call(string name, params object[] methodParams)
+   public async Task<MethodResponse> Call(string name, CancellationToken token, params object[] methodParams)
+        {
+            var model = new MethodModel
+            {
+                Id = IdGenerator(),
+                Method = name,
+                Params = methodParams
+            };
+            MethodResponse res = null;
+            _methods[model.Id] = response =>
+            {
+                res = response;
+            };
+            _webSocketAdapter.SendJson(model);
+   
+            while (res == null && !token.IsCancellationRequested)
+            {
+            }
+   
+            token.ThrowIfCancellationRequested();
+    
+            return res;
+        }
+        
+        
+
+        public void CallMethod(string name, params object[] methodParams)
         {
             var model = new MethodModel
             {
@@ -175,6 +210,27 @@ namespace DdpClient
             return model.Id;
         }
 
+        public string Call(string name, CancellationToken token, Action<MethodResponse> callback, params object[] methodParams)
+        {
+            var model = new MethodModel
+            {
+                Id = IdGenerator(),
+                Method = name,
+                Params = methodParams
+            };
+            _methods[model.Id] = callback;
+            token.ThrowIfCancellationRequested();
+
+            while (!token.IsCancellationRequested)
+            {
+                _webSocketAdapter.SendJson(model);  
+            }
+            token.ThrowIfCancellationRequested();
+            
+            return model.Id;
+        }
+        
+        
         public DdpMethodHandler<T> Call<T>(string name, Action<DetailedError, T> callback, params object[] methodParams)
         {
             var methodHandler = new DdpMethodHandler<T>(_webSocketAdapter, callback, IdGenerator());
@@ -298,5 +354,7 @@ namespace DdpClient
             //dispose unmanaged resources
             _disposed = true;
         }
+        
+        public bool IsAlive => _webSocketAdapter.IsAlive();
     }
 }

@@ -28,9 +28,9 @@ namespace DdpClient
             _webSocketAdapterBase.DdpMessage -= OnDdpMessage;
             var body = ddpMessage.Body;
             if (body["error"] == null)
-                _callback(null, body["result"].ToObject<T>());
+                _callback?.Invoke(null, body["result"].ToObject<T>());
             else
-                _callback(body["error"].ToObject<DetailedError>(), default(T));
+                _callback?.Invoke(body["error"].ToObject<DetailedError>(), default(T));
         }
     }
 }

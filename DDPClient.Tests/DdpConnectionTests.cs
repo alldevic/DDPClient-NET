@@ -8,6 +8,7 @@ using Moq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
+// ReSharper disable DelegateSubtraction
 
 namespace DDPClient.Tests
 {
@@ -107,7 +108,7 @@ namespace DDPClient.Tests
             var parameter = 5;
             _connection.IdGenerator = () => id;
 
-            _connection.Call(methodName, parameter);
+            _connection.CallMethod(methodName, parameter);
 
             _mock.Verify(webSocket => webSocket.SendJson(It.Is<MethodModel>(model => model.Id == id)));
         }

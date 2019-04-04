@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -14,7 +15,7 @@ namespace DdpClient
 
         public abstract void Connect(string url);
 
-        public abstract void ConnectAsync(string url);
+        public abstract Task ConnectAsync(string url);
 
         public abstract void Close();
 
